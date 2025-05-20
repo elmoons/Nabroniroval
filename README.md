@@ -48,6 +48,7 @@
 
 3. Запустите сервисы:  
    ```bash
+   docker network create bookingNetwork
    docker-compose up -d --build
    ```
 
