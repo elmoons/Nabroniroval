@@ -1,0 +1,60 @@
+services:
+  booking_db_service:
+    container_name: 'booking_db'
+    image: postgres:16
+    environment:
+      POSTGRES_USER: abcde
+      POSTGRES_PASSWORD: abcde
+      POSTGRES_DB: postgres
+    networks:
+      - bookingNetwork
+    volumes:
+      - pg-booking-data:/var/lib/postgresql/data
+    ports:
+      - "6432:5432"
+
+  booking_cache_service:
+    container_name: 'booking_cache'
+    image: redis:latest
+    networks:
+      - bookingNetwork
+    ports:
+      - "7379:6379"
+
+  booking_back_service:
+    container_name: 'booking_back'
+    build:
+      context: .
+    ports:
+      - "7777:8000"
+    networks:
+      - bookingNetwork
+    env_file:
+      - .env
+
+  booking_celery_worker_service:
+    container_name: 'booking_celery_worker'
+    build:
+      context: .
+    networks:
+      - bookingNetwork
+    env_file:
+      - .env
+    command: "celery --app=src.tasks.celery_app:celery_instance worker -l INFO"
+
+  booking_celery_beat_service:
+    container_name: 'booking_celery_beat'
+    build:
+      context: .
+    networks:
+      - bookingNetwork
+    env_file:
+      - .env
+    command: "celery --app=src.tasks.celery_app:celery_instance beat -l INFO"
+
+networks:
+  bookingNetwork:
+    external: true
+
+volumes:
+  pg-booking-data:
