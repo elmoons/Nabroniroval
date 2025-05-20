@@ -41,9 +41,9 @@
    cd Nabroniroval
    ```
 
-2. Настройте переменные окружения (см. `.env-example`):  
+2. Настройте переменные окружения (см. `env-example`):  
    ```bash
-   cp .env-example .env
+   cp env-example .env
    ```
 
 3. Запустите сервисы:  
